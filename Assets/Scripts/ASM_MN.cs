@@ -33,22 +33,15 @@ public class ASM_MN : Singleton<ASM_MN>
         listPlayer.Add(new Players(ID, score, userName, IDregion));
     public void YC2()
     {
-        Debug.Log("----------------------------------------------------------------------------------------------------------------------------------------------------");
-        Debug.Log("Danh Sách Toàn Bộ Người Chơi: ");
+        Debug.Log("Y02-----Danh sách người chơi----- ");
         listPlayer.ForEach(player =>
         {
             Debug.Log($"ID: {player.ID}, Name: {player.userName}, Score: {player.score}, Region: {player.IDregion.Name}, Rank: {calculate_rank(player.score)}");
         });
-        Debug.Log("----------------------------------------------------------------------------------------------------------------------------------------------------");
     }
     public void YC3()
     {
-            if (listPlayer.Count == 0)
-        {
-            Debug.Log("Không có người chơi nào trong danh sách.");
-            return;
-        }
-
+        Debug.Log("Y03----Danh sách người chơi có điểm số thấp hơn điểm số hiện tại-----");
         Players currentPlayer = listPlayer.Last();
 
         var lowerScorePlayers = listPlayer
@@ -67,23 +60,79 @@ public class ASM_MN : Singleton<ASM_MN>
     }
     public void YC4()
     {
-        // sinh viên viết tiếp code ở đây
+        Debug.Log("Y04----Tìm player theo id của người chơi hiện tại, in ra thông tin-----");
+        int currentPlayerID = listPlayer.Last().ID;
+
+        var player = listPlayer
+            .FirstOrDefault(p => p.ID == currentPlayerID);
+
+        if (player != null)
+        {
+            Debug.Log("Thông tin người chơi sau hiện tại:");
+            Debug.Log($"ID: {player.ID}, Name: {player.userName}, Score: {player.score}, Region: {player.IDregion.Name}, Rank: {calculate_rank(player.score)}");
+        }
+        else
+        {
+            Debug.Log($"Không tìm thấy người chơi với ID = {currentPlayerID}");
+        }
     }
     public void YC5()
     {
-        // sinh viên viết tiếp code ở đây
+        Debug.Log("Y05----Xuất thông tin Players trong listPlayer theo thứ tự giảm dần-----");
+       var sortedPlayers = listPlayer
+        .OrderByDescending(p => p.score)
+        .ToList();
+
+        sortedPlayers.ForEach(player =>
+            Debug.Log($"ID: {player.ID}, Name: {player.userName}, Score: {player.score}, Region: {player.IDregion.Name}, Rank: {calculate_rank(player.score)}")
+        );
     }
     public void YC6()
     {
-        // sinh viên viết tiếp code ở đây
+        Debug.Log("Y06----Xuất 5 players có score thấp nhất theo thứ tự tăng dần-----");
+       var lowestPlayers = listPlayer
+        .OrderBy(p => p.score)
+        .Take(5)
+        .ToList();
+
+        lowestPlayers.ForEach(player =>
+            Debug.Log($"ID: {player.ID}, Name: {player.userName}, Score: {player.score}, Region: {player.IDregion.Name}, Rank: {calculate_rank(player.score)}")
+        );
     }
     public void YC7()
     {
-        // sinh viên viết tiếp code ở đây
+        Debug.Log("YC7-----Tạo Thread tên BXH để tính score trung bình theo từng Region và lưu vào file-----");
+        Thread thread = new Thread(() =>
+        {
+            CalculateAndSaveAverageScoreByRegion();
+        });
+
+        thread.Name = "BXH";
+        thread.Start();
     }
     void CalculateAndSaveAverageScoreByRegion()
     {
-        // sinh viên viết tiếp code ở đây
+        var regionAverageScores = listPlayer
+        .GroupBy(p => p.IDregion.Name)
+        .Select(g => new
+        {
+            RegionName = g.Key,
+            AverageScore = g.Average(p => p.score)
+        })
+        .OrderByDescending(r => r.AverageScore)
+        .ToList();
+
+        string filePath = Path.Combine(Application.dataPath, "bxhRegion.txt");
+
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            foreach (var region in regionAverageScores)
+            {
+                writer.WriteLine($"Region: {region.RegionName}, Average Score: {region.AverageScore:F2}");
+            }
+        }
+
+        Debug.Log("BXH theo Region đã được lưu vào bxhRegion.txt");
     }
 
 }

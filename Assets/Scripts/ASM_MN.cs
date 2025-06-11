@@ -8,7 +8,14 @@ using System.Threading;
 public class ASM_MN : Singleton<ASM_MN>
 {
     public List<Region> listRegion = new List<Region>();
-    public List<Players> listPlayer = new List<Players>();
+    public List<Players> listPlayer = new List<Players>()
+    {
+        new Players(1, 1500,"Nguyễn Văn A", new Region(0, "VN")),
+        new Players(2, 300, "Trần Thị B", new Region(1, "VN1")),
+        new Players(3, 800,  "Lê Văn C", new Region(2, "VN2")),
+        new Players(4, 1200, "Phạm Thị D", new Region(3, "JS")),
+        new Players(5, 600, "Nguyễn Văn E",  new Region(4, "VS"))
+    };
 
     private void Start()
     {

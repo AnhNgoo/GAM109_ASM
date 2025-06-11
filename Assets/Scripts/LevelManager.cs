@@ -47,6 +47,12 @@ public class LevelManager : MonoBehaviour
         panelLogin.SetActive(false);
     }
 
+    public void PlayAgain()
+    {
+        ScoreKeeper.Instance.score = 0;
+        SceneManager.LoadScene("Game");
+    }
+
     public void LoadGame()
     {
         if (userName.text.Trim().Length == 0) return;
